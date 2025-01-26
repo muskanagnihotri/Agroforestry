@@ -28,7 +28,13 @@
                 <td>{{ farmer[0] }}</td>
                 <td>{{ farmer[1] }}</td>
                 <td>{{ farmer[2] }}</td>
-                <td>{{ farmer[3] }}</td>
+                <td>
+                    {% if farmer[3] %}
+                    <img src="{{ url_for('static', filename=farmer[3].split('static/')[-1]) }}" alt="Field Photo" width="100" height="100">
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
                 <td>{{ farmer[4] }}</td>
                 <td>{{ farmer[5] }}</td>
                 <td>{{ farmer[6] }}</td> <!-- Created By -->
@@ -37,7 +43,7 @@
                 <td>
                     <a href="{{ url_for('delete_farm_data', id=farmer[0]) }}" onclick="return confirm('Are you sure?');">Delete</a>
                     <a href="{{ url_for('update_farm_data', id=farmer[0]) }}" onclick="return confirm('Are you sure?');">Update</a>
-                    <a href="{{ url_for('logout') }}">Logout</a>
+                   
                 </td>
                 {% endif %}
             </tr>
@@ -45,5 +51,8 @@
         </tbody>
     </table>
     <!-- <a href="{{ url_for('logout') }}">Logout</a> -->
+    <div style="text-align: center;">
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
 </body>
 </html>
