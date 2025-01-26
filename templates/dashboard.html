@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Dashboard</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Farmer Name</th>
+                <th>Contact Number</th>
+                <th>Field Photo</th>
+                <th>Plot Location</th>
+                <th>Tree Species</th>
+                <th>Created By</th>
+                <th>Reported To</th>
+                {% if role == 'Senior Manager' %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for farmer in farmers %}
+            <tr>
+                <td>{{ farmer[0] }}</td>
+                <td>{{ farmer[1] }}</td>
+                <td>{{ farmer[2] }}</td>
+                <td>{{ farmer[3] }}</td>
+                <td>{{ farmer[4] }}</td>
+                <td>{{ farmer[5] }}</td>
+                <td>{{ farmer[6] }}</td> <!-- Created By -->
+                <td>{{ farmer[7] }}</td> <!-- Reported To -->
+                {% if role == 'Senior Manager' %}
+                <td>
+                    <a href="{{ url_for('delete_farm_data', id=farmer[0]) }}" onclick="return confirm('Are you sure?');">Delete</a>
+                    <a href="{{ url_for('update_farm_data', id=farmer[0]) }}" onclick="return confirm('Are you sure?');">Update</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- <a href="{{ url_for('logout') }}">Logout</a> -->
+</body>
+</html>

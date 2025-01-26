@@ -1,0 +1,82 @@
+<!-- <!DOCTYPE html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<html>
+<head>
+    <title>Add Farmer Data</title>
+</head>
+<body>
+    <h2>Add Farmer Data</h2>
+    <form method="POST">
+        <label>Farmer Name:</label>
+        <input type="text" name="farmer_name" required><br>
+        <label>Contact Number:</label>
+        <input type="text" name="contact_number" required><br>
+        <label>Field Photo:</label>
+        <input type="text" name="field_photo" required><br>
+        <label>Plot Location:</label>
+        <input type="text" name="plot_location" required><br>
+        <label>Tree Species:</label>
+        <textarea name="tree_species" required></textarea><br>
+        <label>Reported To:</label>
+        <select name="reported_to" required>
+            <option value="">-- Select Manager --</option>
+            <option value="mgr_c">Manager C</option>
+            <option value="mgr_d">Manager D</option>
+        </select><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Farmer Data</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Add Farmer Data</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Farmer Data Form -->
+    <form method="POST" action="{{ url_for('add_farm_data') }}">
+        <label for="farmer_name">Farmer Name:</label><br>
+        <input type="text" id="farmer_name" name="farmer_name" required><br><br>
+
+        <label for="contact_number">Contact Number:</label><br>
+        <input type="text" id="contact_number" name="contact_number" required><br><br>
+
+        <label for="field_photo">Field Photo (URL):</label><br>
+        <input type="text" id="field_photo" name="field_photo"><br><br>
+
+        <label for="plot_location">Plot Location:</label><br>
+        <input type="text" id="plot_location" name="plot_location" required><br><br>
+
+        <label for="tree_species">Tree Species:</label><br>
+        <input type="text" id="tree_species" name="tree_species" required><br><br>
+
+        <label for="reported_to">Reported To (Username):</label><br>
+        <input type="text" id="reported_to" name="reported_to" required><br><br>
+
+        <button type="submit">Submit</button>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </form>
+
+   
+</body>
+</html>
