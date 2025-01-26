@@ -138,42 +138,6 @@ def add_farm_data():
         return render_template('farmer_form.html')
     return redirect(url_for('login'))
 
-
-
-# @app.route('/update_farm_data/<int:id>', methods=['GET', 'POST'])
-# def update_farm_data(id):
-#     if 'username' in session and session.get('role') == 'Senior Manager':
-#         conn = sqlite3.connect('database.db')
-#         cursor = conn.cursor()
-
-#         if request.method == 'POST':
-#             farmer_name = request.form['farmer_name']
-#             contact_number = request.form['contact_number']
-#             field_photo = request.form['field_photo']
-#             plot_location = request.form['plot_location']
-#             tree_species = request.form['tree_species']
-
-#             try:
-#                 cursor.execute('''
-#                     UPDATE farmers
-#                     SET farmer_name = ?, contact_number = ?, field_photo = ?, plot_location = ?, tree_species = ?
-#                     WHERE id = ?
-#                 ''', (farmer_name, contact_number, field_photo, plot_location, tree_species, id))
-#                 conn.commit()
-#                 flash("Data updated successfully!", "success")
-#             except Exception as e:
-#                 flash(f"An error occurred: {e}", "error")
-#             finally:
-#                 conn.close()
-#                 return redirect(url_for('dashboard'))
-
-#         cursor.execute("SELECT * FROM farmers WHERE id = ?", (id,))
-#         farmer = cursor.fetchone()
-#         conn.close()
-
-#         return render_template('update_form.html', farmer=farmer)
-#     return redirect(url_for('login'))
-
 @app.route('/update_farm_data/<int:id>', methods=['GET', 'POST'])
 def update_farm_data(id):
     if 'username' in session and session.get('role') == 'Senior Manager':
