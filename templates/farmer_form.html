@@ -8,8 +8,6 @@
 </head>
 <body>
     <h2>Add Farmer Data</h2>
-
-    <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <ul>
@@ -19,8 +17,6 @@
             </ul>
         {% endif %}
     {% endwith %}
-
-    <!-- Farmer Data Form -->
     <form method="POST" action="{{ url_for('add_farm_data') }}">
         <label for="farmer_name">Farmer Name:</label><br>
         <input type="text" id="farmer_name" name="farmer_name" required><br><br>
