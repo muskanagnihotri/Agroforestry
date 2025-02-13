@@ -5,7 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # For session management
+app.secret_key = 'your_secret_key'  
 
 
 def init_db():
@@ -27,8 +27,6 @@ def init_db():
     conn.close()
 
 init_db()
-
-# Dummy user data
 users = {
     'exec_a': {'password': 'pass_a', 'role': 'Field Executive'},
     'exec_b': {'password': 'pass_b', 'role': 'Field Executive'},
@@ -46,7 +44,7 @@ def index():
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the upload folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -113,7 +111,7 @@ def add_farm_data():
             else:
                 file_path = None
 
-            # Validate input fields
+            
             if not farmer_name or not contact_number or not plot_location or not tree_species or not reported_to:
                 flash("All required fields must be filled!", "error")
                 return redirect(url_for('add_farm_data'))
@@ -158,7 +156,7 @@ def update_farm_data(id):
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
             else:
-                file_path = None  # Keep the old photo if no new file is uploaded
+                file_path = None  
 
             try:
                 # Update farmer data in the database
@@ -173,8 +171,6 @@ def update_farm_data(id):
             finally:
                 conn.close()
                 return redirect(url_for('dashboard'))
-
-        # Fetch the existing farmer data for the form
         cursor.execute("SELECT * FROM farmers WHERE id = ?", (id,))
         farmer = cursor.fetchone()
         conn.close()
