@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  
+<<<<<<< HEAD
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
@@ -13,6 +14,10 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+=======
+
+
+>>>>>>> 1f873f7a359d5adf76cb1e4110e0a504d6e4472f
 def init_db():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -44,6 +49,20 @@ users = {
 def index():
     return redirect(url_for('login'))
 
+<<<<<<< HEAD
+=======
+
+
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+>>>>>>> 1f873f7a359d5adf76cb1e4110e0a504d6e4472f
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -99,7 +118,14 @@ def add_farm_data():
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
+<<<<<<< HEAD
                 file_path = f"uploads/{filename}"  
+=======
+            else:
+                file_path = None
+
+            
+>>>>>>> 1f873f7a359d5adf76cb1e4110e0a504d6e4472f
             if not farmer_name or not contact_number or not plot_location or not tree_species or not reported_to:
                 flash("All required fields must be filled!", "error")
                 return redirect(url_for('add_farm_data'))
@@ -140,7 +166,12 @@ def update_farm_data(id):
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
+<<<<<<< HEAD
                 file_path = f"uploads/{filename}"
+=======
+            else:
+                file_path = None  
+>>>>>>> 1f873f7a359d5adf76cb1e4110e0a504d6e4472f
 
             try:
                 if file_path:
@@ -161,7 +192,10 @@ def update_farm_data(id):
             finally:
                 conn.close()
                 return redirect(url_for('dashboard'))
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1f873f7a359d5adf76cb1e4110e0a504d6e4472f
         cursor.execute("SELECT * FROM farmers WHERE id = ?", (id,))
         farmer = cursor.fetchone()
         conn.close()
