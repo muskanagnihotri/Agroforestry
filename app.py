@@ -1,13 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
-from flask import flash
 import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # For session management
-
-
+app.secret_key = 'your_secret_key'  
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 def init_db():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -27,8 +32,6 @@ def init_db():
     conn.close()
 
 init_db()
-
-# Dummy user data
 users = {
     'exec_a': {'password': 'pass_a', 'role': 'Field Executive'},
     'exec_b': {'password': 'pass_b', 'role': 'Field Executive'},
@@ -40,17 +43,6 @@ users = {
 @app.route('/')
 def index():
     return redirect(url_for('login'))
-
-
-
-UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the upload folder exists
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -91,35 +83,28 @@ def dashboard():
         return render_template('dashboard.html', farmers=farmers, role=role)
     return redirect(url_for('login'))
 
-
 @app.route('/add_farm_data', methods=['GET', 'POST'])
 def add_farm_data():
     if 'username' in session and session.get('role') == 'Field Executive':
         if request.method == 'POST':
-            # Retrieve form data
             farmer_name = request.form.get('farmer_name', '').strip()
             contact_number = request.form.get('contact_number', '').strip()
             plot_location = request.form.get('plot_location', '').strip()
             tree_species = request.form.get('tree_species', '').strip()
             reported_to = request.form.get('reported_to', '').strip()
             created_by = session.get('username')
-
-            # Handle file upload
             file = request.files.get('field_photo')
+            file_path = None  
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-            else:
-                file_path = None
-
-            # Validate input fields
+                file_path = f"uploads/{filename}"  
             if not farmer_name or not contact_number or not plot_location or not tree_species or not reported_to:
                 flash("All required fields must be filled!", "error")
                 return redirect(url_for('add_farm_data'))
 
             try:
-                # Save data into the database
                 conn = sqlite3.connect('database.db')
                 cursor = conn.cursor()
                 cursor.execute('''
@@ -138,42 +123,6 @@ def add_farm_data():
         return render_template('farmer_form.html')
     return redirect(url_for('login'))
 
-
-
-# @app.route('/update_farm_data/<int:id>', methods=['GET', 'POST'])
-# def update_farm_data(id):
-#     if 'username' in session and session.get('role') == 'Senior Manager':
-#         conn = sqlite3.connect('database.db')
-#         cursor = conn.cursor()
-
-#         if request.method == 'POST':
-#             farmer_name = request.form['farmer_name']
-#             contact_number = request.form['contact_number']
-#             field_photo = request.form['field_photo']
-#             plot_location = request.form['plot_location']
-#             tree_species = request.form['tree_species']
-
-#             try:
-#                 cursor.execute('''
-#                     UPDATE farmers
-#                     SET farmer_name = ?, contact_number = ?, field_photo = ?, plot_location = ?, tree_species = ?
-#                     WHERE id = ?
-#                 ''', (farmer_name, contact_number, field_photo, plot_location, tree_species, id))
-#                 conn.commit()
-#                 flash("Data updated successfully!", "success")
-#             except Exception as e:
-#                 flash(f"An error occurred: {e}", "error")
-#             finally:
-#                 conn.close()
-#                 return redirect(url_for('dashboard'))
-
-#         cursor.execute("SELECT * FROM farmers WHERE id = ?", (id,))
-#         farmer = cursor.fetchone()
-#         conn.close()
-
-#         return render_template('update_form.html', farmer=farmer)
-#     return redirect(url_for('login'))
-
 @app.route('/update_farm_data/<int:id>', methods=['GET', 'POST'])
 def update_farm_data(id):
     if 'username' in session and session.get('role') == 'Senior Manager':
@@ -181,27 +130,30 @@ def update_farm_data(id):
         cursor = conn.cursor()
 
         if request.method == 'POST':
-            # Retrieve form data
             farmer_name = request.form['farmer_name']
             contact_number = request.form['contact_number']
             plot_location = request.form['plot_location']
             tree_species = request.form['tree_species']
-
-            # Handle file upload
             file = request.files.get('field_photo')
+            file_path = None  
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-            else:
-                file_path = None  # Keep the old photo if no new file is uploaded
+                file_path = f"uploads/{filename}"
 
             try:
-                # Update farmer data in the database
-                cursor.execute('''UPDATE farmers
-                                  SET farmer_name = ?, contact_number = ?, field_photo = ?, plot_location = ?, tree_species = ?
-                                  WHERE id = ?''',
-                               (farmer_name, contact_number, file_path, plot_location, tree_species, id))
+                if file_path:
+                    cursor.execute('''UPDATE farmers
+                                      SET farmer_name = ?, contact_number = ?, field_photo = ?, plot_location = ?, tree_species = ?
+                                      WHERE id = ?''',
+                                   (farmer_name, contact_number, file_path, plot_location, tree_species, id))
+                else:
+                    cursor.execute('''UPDATE farmers
+                                      SET farmer_name = ?, contact_number = ?, plot_location = ?, tree_species = ?
+                                      WHERE id = ?''',
+                                   (farmer_name, contact_number, plot_location, tree_species, id))
+
                 conn.commit()
                 flash("Data updated successfully!", "success")
             except Exception as e:
@@ -210,7 +162,6 @@ def update_farm_data(id):
                 conn.close()
                 return redirect(url_for('dashboard'))
 
-        # Fetch the existing farmer data for the form
         cursor.execute("SELECT * FROM farmers WHERE id = ?", (id,))
         farmer = cursor.fetchone()
         conn.close()
@@ -218,7 +169,6 @@ def update_farm_data(id):
         return render_template('update_form.html', farmer=farmer)
 
     return redirect(url_for('login'))
-
 
 @app.route('/delete_farm_data/<int:id>', methods=['GET'])
 def delete_farm_data(id):
@@ -238,3 +188,4 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+

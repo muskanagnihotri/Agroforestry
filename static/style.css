@@ -1,4 +1,4 @@
-/* General styles */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
@@ -12,7 +12,7 @@ h2 {
     margin-top: 20px;
 }
 
-/* Form styles */
+
 form {
     max-width: 400px;
     margin: 20px auto;
@@ -52,7 +52,7 @@ form button:hover {
     background-color: #0056b3;
 }
 
-/* Table styles */
+
 table {
     width: 90%;
     margin: 20px auto;
@@ -81,7 +81,6 @@ table tr:hover {
     background-color: #f1f1f1;
 }
 
-/* Buttons */
 a {
     text-decoration: none;
     color: white;
@@ -105,7 +104,7 @@ a:hover {
 }
 
 
-/* Logout button */
+
 .logout {
     display: block;
     width: fit-content;

@@ -41,8 +41,6 @@
 </head>
 <body>
     <h2>Add Farmer Data</h2>
-
-    <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <ul>
@@ -52,8 +50,6 @@
             </ul>
         {% endif %}
     {% endwith %}
-
-    <!-- Farmer Data Form -->
     <form method="POST" action="{{ url_for('add_farm_data') }}">
         <label for="farmer_name">Farmer Name:</label><br>
         <input type="text" id="farmer_name" name="farmer_name" required><br><br>
@@ -62,7 +58,7 @@
         <input type="text" id="contact_number" name="contact_number" required><br><br>
 
         <label for="field_photo">Field Photo:</label><br>
-        <!-- <input type="text" id="field_photo" name="field_photo"><br><br> -->
+        
         <input type="file" name="field_photo" accept="image/*">
 
         <label for="plot_location">Plot Location:</label><br>

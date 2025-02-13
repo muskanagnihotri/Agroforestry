@@ -30,15 +30,16 @@
                 <td>{{ farmer[2] }}</td>
                 <td>
                     {% if farmer[3] %}
-                    <img src="{{ url_for('static', filename=farmer[3].split('static/')[-1]) }}" alt="Field Photo" width="100" height="100">
+                    <img src="{{ url_for('static', filename='uploads/' + farmer[3].split('/')[-1]) }}" alt="Field Photo" width="100" height="100">
                     {% else %}
                         None
                     {% endif %}
                 </td>
+                
                 <td>{{ farmer[4] }}</td>
                 <td>{{ farmer[5] }}</td>
-                <td>{{ farmer[6] }}</td> <!-- Created By -->
-                <td>{{ farmer[7] }}</td> <!-- Reported To -->
+                <td>{{ farmer[6] }}</td> 
+                <td>{{ farmer[7] }}</td> 
                 {% if role == 'Senior Manager' %}
                 <td>
                     <a href="{{ url_for('delete_farm_data', id=farmer[0]) }}" onclick="return confirm('Are you sure?');">Delete</a>
@@ -50,7 +51,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <!-- <a href="{{ url_for('logout') }}">Logout</a> -->
     <div style="text-align: center;">
         <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
     </div>
